@@ -9,6 +9,8 @@
 #import "ViewController.h"
 
 @interface ViewController ()
+@property (weak, nonatomic) IBOutlet UILabel *mysteryWordLabel;
+@property (weak, nonatomic) IBOutlet UITextField *userInputTextField;
 
 @end
 
@@ -22,6 +24,8 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+- (IBAction)guessButtonPressed:(UIButton *)sender {
 }
 
 @end
