@@ -10,6 +10,10 @@
 
 @interface ViewController : UIViewController
 
+@property(strong, nonatomic)NSArray *words;
+@property(strong, nonatomic)NSString *mysteryWord;
 
+- (void)checkForMatchAndReplace:(NSString *)userInput;
+- (void)setupUI;
 @end
 
