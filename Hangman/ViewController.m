@@ -45,12 +45,11 @@
         i++;
     }
     NSLog(@"%@", newMysteryWordLabel);
-    NSMutableAttributedString *newAttributedTextForLabel = [[NSMutableAttributedString alloc] initWithString:newMysteryWordLabel];
-    [newAttributedTextForLabel addAttribute:NSKernAttributeName value:@10 range:NSMakeRange(0, newAttributedTextForLabel.length)];
- //   _mysteryWordLabel.text = newMysteryWordLabel;
+    NSMutableAttributedString *newAttributedTextForLabel = [self adjustKerning:newMysteryWordLabel];
     _mysteryWordLabel.attributedText = newAttributedTextForLabel;
     
 }
+// This method adjusts the kerning on text for the mysteryWordLabel
 - (NSMutableAttributedString *)adjustKerning:(NSString *)stringToAdjust{
     NSMutableAttributedString *newAttributedTextForLabel = [[NSMutableAttributedString alloc] initWithString:stringToAdjust];
     [newAttributedTextForLabel addAttribute:NSKernAttributeName value:@10 range:NSMakeRange(0, newAttributedTextForLabel.length)];
@@ -95,7 +94,7 @@
         if ([stringToPotentiallyReplace isEqualToString:normalizedInput]) {
             NSRange range = NSMakeRange(i, 1);
             // This is where I changed it!
-            NSString * newLabelString = [_mysteryWordLabel.text stringByReplacingCharactersInRange:range withString:normalizedInput];
+            NSString *newLabelString = [_mysteryWordLabel.text stringByReplacingCharactersInRange:range withString:normalizedInput];
             NSMutableAttributedString * kernedLabel = [self adjustKerning:newLabelString];
             _mysteryWordLabel.attributedText = kernedLabel;
         }
