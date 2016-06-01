@@ -45,9 +45,18 @@
         i++;
     }
     NSLog(@"%@", newMysteryWordLabel);
-    _mysteryWordLabel.text = newMysteryWordLabel;
+    NSMutableAttributedString *newAttributedTextForLabel = [[NSMutableAttributedString alloc] initWithString:newMysteryWordLabel];
+    [newAttributedTextForLabel addAttribute:NSKernAttributeName value:@10 range:NSMakeRange(0, newAttributedTextForLabel.length)];
+ //   _mysteryWordLabel.text = newMysteryWordLabel;
+    _mysteryWordLabel.attributedText = newAttributedTextForLabel;
     
 }
+- (NSMutableAttributedString *)adjustKerning:(NSString *)stringToAdjust{
+    NSMutableAttributedString *newAttributedTextForLabel = [[NSMutableAttributedString alloc] initWithString:stringToAdjust];
+    [newAttributedTextForLabel addAttribute:NSKernAttributeName value:@10 range:NSMakeRange(0, newAttributedTextForLabel.length)];
+    return newAttributedTextForLabel;
+}
+
 
 - (void)setupUI {
     // Create array of words
@@ -85,7 +94,10 @@
         NSString *stringToPotentiallyReplace = [NSString stringWithFormat:@"%c", [_mysteryWord characterAtIndex:i]];
         if ([stringToPotentiallyReplace isEqualToString:normalizedInput]) {
             NSRange range = NSMakeRange(i, 1);
-            _mysteryWordLabel.text = [_mysteryWordLabel.text stringByReplacingCharactersInRange:range withString:normalizedInput];
+            // This is where I changed it!
+            NSString * newLabelString = [_mysteryWordLabel.text stringByReplacingCharactersInRange:range withString:normalizedInput];
+            NSMutableAttributedString * kernedLabel = [self adjustKerning:newLabelString];
+            _mysteryWordLabel.attributedText = kernedLabel;
         }
     }
 }
