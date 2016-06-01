@@ -13,6 +13,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *userInputTextField;
 @property (weak, nonatomic) IBOutlet UILabel *guessCountLabel;
 @property int guessCounter;
+@property (strong, nonatomic) IBOutlet UILabel *inputErrorLabel;
 
 @end
 
@@ -20,7 +21,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _mysteryWord = @"ACME";
+    _inputErrorLabel.text = @"";
     [self setupUI];
     // Do any additional setup after loading the view, typically from a nib.
 }
@@ -30,7 +31,13 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)setupUI {
+- (void)createWordsArray {
+    _words = @[@"QUICK", @"TAXES", @"JUMPS", @"ROCKS", @"FANCY",
+               @"HIJACK", @"JUMPED", @"QUIVER", @"CHUNKY", @"PAJAMA",
+               @"MUFFLED", @"BEJEWEL", @"SQUELCH", @"HAMMOCK", @"JACKETS"];
+}
+
+- (void)setMysteryWordLabel {
     NSMutableString *newMysteryWordLabel = [NSMutableString stringWithCapacity:[_mysteryWord length]];
     int i = 0;
     while (i < [_mysteryWord length]) {
@@ -40,30 +47,46 @@
     NSLog(@"%@", newMysteryWordLabel);
     _mysteryWordLabel.text = newMysteryWordLabel;
     
+}
+
+- (void)setupUI {
+    // Create array of words
+    [self createWordsArray];
+    // Set mystery word
+    uint32_t randomIndex = arc4random_uniform((u_int32_t)[_words count]);
+    NSLog(@"%d is the index", randomIndex);
+    _mysteryWord = [_words objectAtIndex:randomIndex];
+    NSLog(@"%@ is the mystery word", _mysteryWord);
+    // Set label in UI to have as many underscores as there are letters in mystery word
+    [self setMysteryWordLabel];
     // Guess Counter - set to 10
     self.guessCounter = 10;
     self.guessCountLabel.text = [NSString stringWithFormat: @"Guesses Remaining: %d", self.guessCounter];
 }
 
-- (void)checkForMatchAndReplace:(NSString *)userInput {
-    for (int i = 0; i < [_mysteryWordLabel.text length]; i++) {
-        NSString *stringToPotentiallyReplace = [NSString stringWithFormat:@"%c", [_mysteryWord characterAtIndex:i]];
-        if ([stringToPotentiallyReplace isEqualToString:userInput]) {
-            NSRange range = NSMakeRange(i, 1);
-            _mysteryWordLabel.text = [_mysteryWordLabel.text stringByReplacingCharactersInRange:range withString:userInput];
-        }
+
+- (NSString *)checkForFormatAndNormalize:(NSString *)userInput {
+    NSError *error;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\[a-zA-z]" options:NSRegularExpressionCaseInsensitive error:&error];
+    NSUInteger numberOfMatches = [regex numberOfMatchesInString:userInput options:0 range:NSMakeRange(0, [userInput length])];
+    
+    if ([userInput length] > 1 || numberOfMatches < 1) {
+        _inputErrorLabel.text = @"Invalid input. One letter only";
+        return nil;
+    } else {
+        _inputErrorLabel.text = @"";
+        NSString *normalizedString = [userInput uppercaseString];
+        return normalizedString;
     }
 }
 
-- (IBAction)guessButtonPressed:(UIButton *)sender {
-    [self checkForMatchAndReplace:_userInputTextField.text];
-    if ([self.mysteryWordLabel.text isEqualToString:_mysteryWord]){
-        [self winnerAlert];
-    }
-    else if (_guessCounter == 0){
-        [self gameOverAlert];
-    } else {
-    [self updateGuessCount];
+- (void)checkForMatchAndReplace:(NSString *)normalizedInput {
+    for (int i = 0; i < [_mysteryWordLabel.text length]; i++) {
+        NSString *stringToPotentiallyReplace = [NSString stringWithFormat:@"%c", [_mysteryWord characterAtIndex:i]];
+        if ([stringToPotentiallyReplace isEqualToString:normalizedInput]) {
+            NSRange range = NSMakeRange(i, 1);
+            _mysteryWordLabel.text = [_mysteryWordLabel.text stringByReplacingCharactersInRange:range withString:normalizedInput];
+        }
     }
 }
 
@@ -121,6 +144,21 @@
 
     [alert addAction:restart];
     [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (IBAction)guessButtonPressed:(UIButton *)sender {
+    NSString *normalizedString = [self checkForFormatAndNormalize:_userInputTextField.text];
+    if (normalizedString != nil) {
+        [self checkForMatchAndReplace:normalizedString];
+    }
+    if ([self.mysteryWordLabel.text isEqualToString:_mysteryWord]){
+        [self winnerAlert];
+    }
+    else if (_guessCounter == 0){
+        [self gameOverAlert];
+    } else {
+        [self updateGuessCount];
+    }
 }
 
 @end
