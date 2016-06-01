@@ -49,11 +49,18 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="esD-91-JBG">
+                                <rect key="frame" x="35" y="287" width="258" height="50"/>
+                                <fontDescription key="fontDescription" name="Chalkduster" family="Chalkduster" pointSize="14"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
                         <outlet property="guessCountLabel" destination="fTs-uU-ox4" id="Ar4-Dl-sjl"/>
+                        <outlet property="inputErrorLabel" destination="esD-91-JBG" id="ofC-GU-5Dm"/>
                         <outlet property="mysteryWordLabel" destination="37x-aJ-6Ar" id="DrU-J1-nuG"/>
                         <outlet property="userInputTextField" destination="0gM-d6-BdJ" id="nfu-Rb-c4g"/>
                     </connections>
